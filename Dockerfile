@@ -17,10 +17,10 @@ RUN git clone https://github.com/discus0434/text-generation.git
 WORKDIR /text-generation
 
 # Setup conda environment
-RUN conda env create -n textgen
+RUN conda create -n textgen python=3.9
 RUN echo "source activate textgen" > ~/.bashrc
 RUN conda run -n textgen pip install -r requirements.txt
 
 RUN chmod +x setup.sh
-
+RUN chmod +x finetune.sh
 RUN ./setup.sh

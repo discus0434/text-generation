@@ -1,0 +1,12 @@
+python ./transformers/examples/pytorch/language-modeling/run_clm.py \
+    --model_name_or_path rinna/japanese-gpt2-xsmall \
+    --train_file data/tweets.txt \
+    --do_train \
+    --fp16 \
+    --fp16_full_eval True \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 1 \
+    --save_total_limit 3 \
+    --output_dir output \
+    --overwrite_output_dir \
+    --auto_find_batch_size \
