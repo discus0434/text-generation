@@ -1,7 +1,7 @@
 # Generate
 python gpt2-japanese/gpt2-generate.py \
-    --model gpt2ja-small/gpt2ja-finetune-small \
-    --num_generate 10 \
-    --top_k 40 \
-    --top_p 0.9 \
-    --temperature 1.0
+    --model checkpoints/gpt2ja-finetune-small \
+    --num_generate 100 \
+    --temperature 1.0 \
+    --min_length 100 \
+    --max_length 200

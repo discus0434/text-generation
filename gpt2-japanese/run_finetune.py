@@ -13,7 +13,7 @@ from model import HParams as HParams
 
 os.environ["TF_DETERMINISTIC_OPS"] = "0"
 
-CHECKPOINT_DIR = "./gpt2ja-small"
+CHECKPOINT_DIR = "./checkpoints"
 SAMPLE_DIR = "samples"
 
 parser = argparse.ArgumentParser(

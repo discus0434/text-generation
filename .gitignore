@@ -1,6 +1,8 @@
 *.pkl
 gpt2ja-small/*
-sample_tweet/*
+gpt2ja-medium/*
+sample_texts/*
+checkpoints/*
 *.npz
 
 # Byte-compiled / optimized / DLL files
