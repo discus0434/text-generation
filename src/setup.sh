@@ -4,3 +4,6 @@ tar xvfj gpt2ja-small.tar.bz2
 
 # Optional (not needed)
 git clone https://github.com/huggingface/transformers
+
+# Remove bz2 file
+rm gpt2ja-small.tar.bz2
