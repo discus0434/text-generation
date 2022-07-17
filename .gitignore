@@ -4,6 +4,7 @@ gpt2ja-medium/*
 sample_texts/*
 checkpoints/*
 *.npz
+special_thanks.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

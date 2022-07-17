@@ -127,7 +127,10 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
     if len(args.output_file) > 0:
         with open(args.output_file, "w", encoding="utf-8") as of:
             for i in range(args.num_generate):
-                of.write(generate_one(sess, output) + "\n")
+                out = generate_one(sess, output)
+                print(out)
+                print("========")
+                of.write(out + "\n")
                 if i < args.num_generate - 1:
                     of.write("========\n")
     else:

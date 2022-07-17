@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 import argparse
@@ -36,17 +37,12 @@ def get_tweets_from_user(
     if user_id is None:
         user_id = client.get_user(username=user_name).data["id"]
 
-    if start_time is not None:
-        start_time = datetime.strptime(start_time, "%Y-%m-%d")
-    if end_time is not None:
-        end_time = datetime.strptime(end_time, "%Y-%m-%d")
-
     tweets = []
     for tweet in tweepy.Paginator(
         client.get_users_tweets,
         id=user_id,
         max_results=100,
-        exclude=["retweets", "replies"],
+        exclude=["retweets"],
         start_time=start_time,
         end_time=end_time,
     ).flatten(limit=max_tweets):
@@ -54,8 +50,13 @@ def get_tweets_from_user(
         # if tweet includes media, skip it
         if "http" in tweet.text:
             continue
+        if tweet.text.startswith("@"):
+            mention = tweet.text.split()[0] + " "
+            t = tweet.text.replace(mention, "")
+        else:
+            t = tweet.text
 
-        tweets.append(tweet.text + "<|endoftext|>")
+        tweets.append(t + "<|endoftext|>")
 
     return tweets
 
@@ -124,18 +125,28 @@ def main():
         bearer_token=os.getenv("BEARER_TOKEN"),
     )
 
+    if args.start_time is not None:
+        start_time = datetime.strptime(args.start_time, "%Y-%m-%d")
+    else:
+        start_time = args.start_time
+    if args.end_time is not None:
+        end_time = datetime.strptime(args.end_time, "%Y-%m-%d")
+    else:
+        end_time = args.end_time
+
+
     tweets = get_tweets_from_user(
         auth_info,
         user_id=args.user_id,
         user_name=args.user_name,
         max_tweets=args.max_tweets,
-        start_time=args.start_time,
-        end_time=args.end_time,
+        start_time=start_time,
+        end_time=end_time,
     )
 
     if not os.path.exists(Path(args.output_dir)):
         os.makedirs(Path(args.output_dir), exist_ok=True)
-    with open(Path(args.output_dir) / f"{args.user_name}_{args.max_tweets}.txt", "w") as f:
+    with open(Path(args.output_dir) / f"{args.user_name}_{args.max_tweets}_{args.start_time}_to_{args.end_time}.txt", "w") as f:
         tweets = "\n".join(tweets)
         print(tweets)
         f.write(tweets)
