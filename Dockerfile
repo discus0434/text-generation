@@ -24,6 +24,5 @@ RUN conda run -n textgen pip install -r requirements.txt
 RUN chmod +x src/setup.sh
 RUN chmod +x src/finetune.sh
 RUN chmod +x src/generate.sh
-RUN chmod +x src/download_tweets.sh
 
 RUN ./setup.sh
