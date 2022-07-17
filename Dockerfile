@@ -25,4 +25,4 @@ RUN chmod +x src/setup.sh
 RUN chmod +x src/finetune.sh
 RUN chmod +x src/generate.sh
 
-RUN ./setup.sh
+RUN src/setup.sh
