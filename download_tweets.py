@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime
 from pathlib import Path
 import argparse
 from dataclasses import dataclass
@@ -22,6 +23,8 @@ def get_tweets_from_user(
     user_id: int | None,
     user_name: str | None,
     max_tweets: int = 100,
+    start_time: str | None,
+    end_time: str | None,
 ) -> list[str]:
 
     client = tweepy.Client(
@@ -33,12 +36,19 @@ def get_tweets_from_user(
     if user_id is None:
         user_id = client.get_user(username=user_name).data["id"]
 
+    if start_time is not None:
+        start_time = datetime.strptime(start_time, "%Y-%m-%d")
+    if end_time is not None:
+        end_time = datetime.strptime(end_time, "%Y-%m-%d")
+
     tweets = []
     for tweet in tweepy.Paginator(
         client.get_users_tweets,
         id=user_id,
         max_results=100,
         exclude=["retweets", "replies"],
+        start_time=start_time,
+        end_time=end_time,
     ).flatten(limit=max_tweets):
 
         # if tweet includes media, skip it
@@ -87,6 +97,22 @@ def main():
         default=100,
         dest="max_tweets",
     )
+    argparser.add_argument(
+        "-s",
+        "--start_time",
+        type=str,
+        help="YYYY-MM-DD",
+        default=None,
+        dest="start_time",
+    )
+    argparser.add_argument(
+        "-e",
+        "--end_time",
+        type=str,
+        help="YYYY-MM-DD",
+        default=None,
+        dest="end_time",
+    )
     args = argparser.parse_args()
 
     # Load .env file and get bearer token
@@ -103,6 +129,8 @@ def main():
         user_id=args.user_id,
         user_name=args.user_name,
         max_tweets=args.max_tweets,
+        start_time=args.start_time,
+        end_time=args.end_time,
     )
 
     if not os.path.exists(Path(args.output_dir)):
