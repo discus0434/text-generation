@@ -115,9 +115,9 @@ def _proc(i, args):
     array_file = []
     for curDir, dirs, files in os.walk(args.src_dir):
         array_file.append((curDir, dirs, files))
-    with open("Japanese-BPEEncoder/ja-bpe.txt", encoding="utf-8") as f:
+    with open("gpt2-japanese/ja-bpe.txt", encoding="utf-8") as f:
         bpe = f.read().split("\n")
-    with open("Japanese-BPEEncoder/emoji.json", encoding="utf-8") as f:
+    with open("gpt2-japanese/emoji.json", encoding="utf-8") as f:
         emoji = json.loads(f.read())
 
     enc = BPEEncoder_ja(bpe, emoji)

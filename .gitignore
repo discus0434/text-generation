@@ -1,10 +1,7 @@
-# Disco-specfic ignores
-init_images/*
-images_out/*
-MiDaS/
-models/
-pretrained/*
-settings.json
+*.pkl
+gpt2ja-small/*
+sample_tweet/*
+*.npz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -148,3 +145,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+

@@ -1,12 +1,11 @@
-python ./transformers/examples/pytorch/language-modeling/run_clm.py \
-    --model_name_or_path rinna/japanese-gpt2-xsmall \
-    --train_file data/tweets.txt \
-    --do_train \
-    --fp16 \
-    --fp16_full_eval True \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 1 \
-    --save_total_limit 3 \
-    --output_dir output \
-    --overwrite_output_dir \
-    --auto_find_batch_size \
+# Encode
+python gpt2-japanese/encode_bpe.py --src_dir sample_tweet --dst_file finetune
+
+# Fine-Tuning
+python gpt2-japanese/run_finetune.py --base_model gpt2ja-small --dataset finetune.npz --run_name gpt2ja-finetune-small
+
+# Generate
+python gpt2-japanese/gpt2-generate.py --model gpt2ja-small/gpt2ja-finetune-small --num_generate 10
+
+# Remove pickle files
+for i in `seq 0 7`; do rm tmp$i.pkl; done

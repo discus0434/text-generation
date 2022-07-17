@@ -37,7 +37,7 @@ def get_tweets_from_user(
     for tweet in tweepy.Paginator(
         client.get_users_tweets,
         id=user_id,
-        max_results=max_tweets,
+        max_results=100,
         exclude=["retweets", "replies"],
     ).flatten(limit=max_tweets):
 
@@ -45,7 +45,7 @@ def get_tweets_from_user(
         if "http" in tweet.text:
             continue
 
-        tweets.append("<|startoftext|>" + tweet.text + "<|endoftext|>")
+        tweets.append(tweet.text + "<|endoftext|>")
 
     return tweets
 
@@ -97,7 +97,7 @@ def main():
         max_tweets=args.max_tweets,
     )
 
-    with open("tweets/tweets.txt", "w") as f:
+    with open("sample_tweet/tweets2.txt", "w") as f:
         tweets = "\n".join(tweets)
         print(tweets)
         f.write(tweets)
