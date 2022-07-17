@@ -4,4 +4,4 @@ python gpt2-japanese/gpt2-generate.py \
     --num_generate 10 \
     --top_k 40 \
     --top_p 0.9 \
-    --temperature 0.7
+    --temperature 1.0

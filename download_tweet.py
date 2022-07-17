@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-import time
+from pathlib import Path
 import argparse
 from dataclasses import dataclass
 
@@ -72,6 +72,14 @@ def main():
         dest="user_name",
     )
     argparser.add_argument(
+        "-o",
+        "--output_dir",
+        type=str,
+        help="Output dir",
+        default="sample_texts",
+        dest="output_dir",
+    )
+    argparser.add_argument(
         "-max",
         "--max_tweets",
         type=int,
@@ -97,7 +105,9 @@ def main():
         max_tweets=args.max_tweets,
     )
 
-    with open("sample_tweet/tweets2.txt", "w") as f:
+    if not os.path.exists(Path(args.output_dir)):
+        os.makedirs(Path(args.output_dir), exist_ok=True)
+    with open(Path(args.output_dir) / f"{args.user_name}_{args.max_tweets}.txt", "w") as f:
         tweets = "\n".join(tweets)
         print(tweets)
         f.write(tweets)

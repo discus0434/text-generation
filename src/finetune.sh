@@ -1,5 +1,5 @@
 # Encode
-python gpt2-japanese/encode_bpe.py --src_dir sample_tweet --dst_file finetune
+python gpt2-japanese/encode_bpe.py --src_dir sample_texts --dst_file finetune
 
 # Fine-Tuning
 python gpt2-japanese/run_finetune.py \
