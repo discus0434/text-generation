@@ -50,13 +50,8 @@ def get_tweets_from_user(
         # if tweet includes media, skip it
         if "http" in tweet.text:
             continue
-        if tweet.text.startswith("@"):
-            mention = tweet.text.split()[0] + " "
-            t = tweet.text.replace(mention, "")
-        else:
-            t = tweet.text
 
-        tweets.append(t + "<|endoftext|>")
+        tweets.append(tweet.text + "<|endoftext|>")
 
     return tweets
 
