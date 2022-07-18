@@ -2,15 +2,16 @@ import os
 import json
 import argparse
 
-from tqdm import tqdm
-import numpy as np
+os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
+os.environ["TF_DETERMINISTIC_OPS"] = "0"
+
 import tensorflow._api.v2.compat.v1 as tf
+
+tf.get_logger().setLevel("ERROR")
 
 from sampling import sample_sequence
 from encode_bpe import BPEEncoder_ja
 from model import HParams as HParams
-
-os.environ["TF_DETERMINISTIC_OPS"] = "0"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", type=str, default="gpt2ja-small")
@@ -125,16 +126,19 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
     saver.restore(sess, ckpt)
 
     if len(args.output_file) > 0:
+
+        if "/" in args.output_file:
+            os.makedirs(args.output_file.split('/')[0], exist_ok=True)
+
         with open(args.output_file, "w", encoding="utf-8") as of:
             for i in range(args.num_generate):
                 out = generate_one(sess, output)
                 print(out)
-                print("========")
                 of.write(out + "\n")
                 if i < args.num_generate - 1:
                     of.write("========\n")
     else:
         for i in range(args.num_generate):
             print(generate_one(sess, output))
-            if i < args.num_generate - 1:
+            if i < args.num_generate - 1 and args.num_generate != 1:
                 print("========")

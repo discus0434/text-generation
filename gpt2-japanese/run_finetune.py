@@ -262,7 +262,7 @@ def main():
         start_time = time.time()
 
         try:
-            for i in range(200):
+            for i in range(250):
                 if counter % args.save_every == 0:
                     save()
 
