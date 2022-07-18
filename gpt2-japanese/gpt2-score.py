@@ -1,14 +1,16 @@
 import json
 import os
 import sys
-import tensorflow.compat.v1 as tf
 import argparse
 
-if int(tf.__version__[0]) > 1:
-    from model import HParams as HParams
-else:
-    from tensorflow.contrib.training import HParams
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+os.environ["TF_DETERMINISTIC_OPS"] = "0"
 
+import tensorflow._api.v2.compat.v1 as tf
+
+tf.get_logger().setLevel("ERROR")
+
+from model import HParams as HParams
 import model
 from encode_bpe import BPEEncoder_ja
 
@@ -52,10 +54,10 @@ parser.add_argument('--exclude-end', action='store_true')
 parser.add_argument('--gpu', type=str, default='0')
 args = parser.parse_args()
 
-with open('ja-bpe.txt', encoding='utf-8') as f:
+with open("gpt2-japanese/ja-bpe.txt", encoding='utf-8') as f:
     bpe = f.read().split('\n')
 
-with open('emoji.json', encoding='utf-8') as f:
+with open('gpt2-japanese/emoji.json', encoding='utf-8') as f:
     emoji = json.loads(f.read())
 
 enc = BPEEncoder_ja(bpe, emoji)

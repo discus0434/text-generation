@@ -58,7 +58,7 @@ def generate(
     num_generate: int = 1,
     temperature: float = 1.0,
     min_length: int = 120,
-    max_length: int = 140,
+    max_length: int = 130,
     output_file: str = "dist/dist.txt",
     context: str = "<|endoftext|>",
 ) -> str:
@@ -83,10 +83,10 @@ def generate(
 def post_tweet(
     client: tweepy.Client,
     text: str,
+    score: str,
     model: str,
 ) -> None:
     json = {}
-    json["text"] = text
 
     poll_or_not = random.randint(0, 100)
     if poll_or_not >= 90:
@@ -99,10 +99,12 @@ def post_tweet(
                     num_generate=1,
                     output_file="dist/dist.txt",
                     min_length=5,
-                    max_length=24,
+                    max_length=19,
                 )
             )
         json["poll"] = {"options": options, "duration_minutes": 30}
+
+    json["text"] = text + f"\n score: {score}"
 
     return client._make_request("POST", "/2/tweets", json=json, user_auth=True)
 
@@ -146,7 +148,22 @@ def create_custom_tweets(
         output_file="dist/dist.txt",
     )
 
-    post_tweet(client, text=generated_text, model=model)
+    score = (
+        subprocess.run(
+            f"python gpt2-japanese/gpt2-score.py \
+                dist/dist.txt \
+                --model {model} \
+                --exclude-end",
+            shell=True,
+            capture_output=True,
+        )
+        .stdout
+        .decode()
+        .split("\t")[-1]
+        .strip()
+    )
+
+    post_tweet(client, text=generated_text, score=score, model=model)
 
 
 def main():
