@@ -2,7 +2,7 @@ import os
 import json
 import argparse
 
-os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 os.environ["TF_DETERMINISTIC_OPS"] = "0"
 
 import tensorflow._api.v2.compat.v1 as tf

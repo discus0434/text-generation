@@ -1,17 +1,21 @@
-import argparse
-import json
 import os
-import numpy as np
-import tensorflow._api.v2.compat.v1 as tf
 import time
-import tqdm
+import json
+import argparse
 from copy import copy
-from encode_bpe import BPEEncoder_ja
-import model
-
-from model import HParams as HParams
 
 os.environ["TF_DETERMINISTIC_OPS"] = "0"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
+import tqdm
+import numpy as np
+import tensorflow._api.v2.compat.v1 as tf
+
+from encode_bpe import BPEEncoder_ja
+import model
+from model import HParams as HParams
+
+tf.get_logger().setLevel("ERROR")
 
 CHECKPOINT_DIR = "./checkpoints"
 SAMPLE_DIR = "samples"
@@ -262,7 +266,7 @@ def main():
         start_time = time.time()
 
         try:
-            for i in range(250):
+            for i in range(400):
                 if counter % args.save_every == 0:
                     save()
 
