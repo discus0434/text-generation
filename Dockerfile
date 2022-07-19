@@ -1,9 +1,12 @@
 FROM nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu18.04
 
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+SHELL ["/bin/bash", "-c"]
 
 # Install essentials
-RUN apt-get update && apt-get install -y curl git wget unzip python-pip libgl1-mesa-dev tar nano sudo systemd
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl git wget unzip python-pip libgl1-mesa-dev tar nano sudo systemd \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Setup conda
 RUN curl https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh -o Miniconda3-py39_4.10.3-Linux-x86_64.sh

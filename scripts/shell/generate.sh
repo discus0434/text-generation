@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Generate
 mkdir dist -p
 python gpt2-japanese/gpt2-generate.py \

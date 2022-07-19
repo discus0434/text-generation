@@ -48,7 +48,7 @@ def finetune(
 
     # Remove interim files
     subprocess.run(f"rm {dst_file}.npz", shell=True)
-    subprocess.run("for i in `seq 0 7`; do rm tmp$i.pkl; done", shell=True)
+    subprocess.run("for i in $(seq 0 7); do rm tmp$i.pkl; done", shell=True)
 
     return None
 
