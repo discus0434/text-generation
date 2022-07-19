@@ -6,6 +6,7 @@
 </h1>
 
 <p>
+<img alt="Codacy grade" src="https://img.shields.io/codacy/grade/52d3bb26d382445a9bc5d1fd4a8cfc49?style=flat-square">
   <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/_determina_?color=blue&style=flat-square">
 </p>
 
