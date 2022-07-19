@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install essentials
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl git wget unzip python-pip libgl1-mesa-dev tar nano sudo systemd \
+    curl git wget unzip python-pip libgl1-mesa-dev tar nano sudo systemd psmisc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
