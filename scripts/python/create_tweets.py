@@ -181,8 +181,8 @@ def main():
         access_token_secret=os.getenv("ACCESS_TOKEN_SECRET")
     )
 
-    # Run for a week
-    for _ in range(NUM_TWEETS_PER_DAY * 7):
+    # Run for a year
+    for _ in range(NUM_TWEETS_PER_DAY * 365):
 
         # Generate a tweet and post it
         create_custom_tweets(auth_info=auth_info)
