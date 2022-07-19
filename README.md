@@ -86,7 +86,7 @@ Arrange your text file you want to use in `sample_texts/`.
 mv <your text file>.txt sample_texts/
 ```
 
-...or download tweets with Python script
+...or download someone's tweets with Python script to use it
 
 ```zsh
 python ./scripts/python/download_tweets.py -u <Twitter user ID> -max <number of tweets you will get>
