@@ -4,9 +4,9 @@
   Text Generator Powered by GPT2-JA
 </h1>
 
-<p>
-  <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/52d3bb26d382445a9bc5d1fd4a8cfc49?style=flat-square">
-  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/_determina_?color=blue&style=flat-square">
+<p align="center">
+  <a href="https://www.codacy.com/gh/discus0434/text-generation/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=discus0434/text-generation&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/52d3bb26d382445a9bc5d1fd4a8cfc49"/></a>
+  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/_determina_?color=skyblue&style=social">
 </p>
 
 <h4 align="center">
