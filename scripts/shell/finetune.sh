@@ -10,4 +10,4 @@ python gpt2-japanese/run_finetune.py \
     --run_name gpt2ja-finetune-small
 
 # Remove pickle files
-for i in $(seq 0 7); do rm tmp$i.pkl; done
+for i in "$(seq 0 7)"; do rm tmp$i.pkl; done
