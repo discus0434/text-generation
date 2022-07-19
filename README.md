@@ -1,7 +1,6 @@
 <h1 align="center">
   <img src="./docs/images/image.png" width="50%">
   <br>
-  <br>
   Text Generator Powered by GPT2-JA
 </h1>
 
