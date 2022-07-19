@@ -77,7 +77,7 @@ ACCESS_TOKEN_SECRET = XXX
 
 ## Usage
 
-You can not only make Twitter Bot but just generate sentences.
+You can not only make a Twitter bot but just generate sentences.
 
 ### Preparation
 
