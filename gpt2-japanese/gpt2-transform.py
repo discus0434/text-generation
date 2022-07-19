@@ -1,16 +1,14 @@
-import json
 import os
-import numpy as np
-import tensorflow.compat.v1 as tf
+import json
 import argparse
+
 from tqdm import tqdm
+import numpy as np
+import tensorflow._api.v2.compat.v1 as tf
+
 import model
 from encode_bpe import BPEEncoder_ja
-
-if int(tf.__version__[0]) > 1:
-    from model import HParams as HParams
-else:
-    from tensorflow.contrib.training import HParams
+from model import HParams as HParams
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='gpt2ja-medium')
