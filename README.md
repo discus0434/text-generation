@@ -109,9 +109,7 @@ scripts/shell/generate.sh
 
 #### Fine-tuning and generate tweet
 <br>
-
 ...Run all of cells in `create_tweet.ipynb`.
-
 <br>
 
 #### Fine-tuning and generate tweets per 30 min till interrupted
