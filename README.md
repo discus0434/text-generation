@@ -64,7 +64,7 @@ scripts/shell/setup.sh
 
 ### 4. Arrange Twitter API tokens (not necessary if you do not interact with Twitter)
 
-Arrange a `.env` file in the project directory.
+Arrange `.env` file in the project directory.
 `.env` file should look like this:
 
 ```txt
