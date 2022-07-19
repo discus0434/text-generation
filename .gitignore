@@ -5,7 +5,6 @@ sample_texts/*
 checkpoints/*
 *.npz
 special_thanks.txt
-crontab
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -17,7 +16,6 @@ __pycache__/
 
 # Media
 video/*
-*.png
 
 # Distribution / packaging
 .Python

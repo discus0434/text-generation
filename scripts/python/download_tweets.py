@@ -110,9 +110,9 @@ def main():
     load_dotenv()
 
     auth_info = AuthenticationInfo(
-        api_key=os.getenv("TEINEI_API_KEY"),
-        api_secret_key=os.getenv("TEINEI_API_SECRET_KEY"),
-        bearer_token=os.getenv("TEINEI_BEARER_TOKEN"),
+        api_key=os.getenv("API_KEY"),
+        api_secret_key=os.getenv("API_SECRET_KEY"),
+        bearer_token=os.getenv("BEARER_TOKEN"),
     )
 
     tweets = get_tweets_from_user(

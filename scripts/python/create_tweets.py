@@ -175,10 +175,10 @@ def main():
 
     # Get auth tokens from .env file
     auth_info = AuthenticationInfo(
-        api_key=os.getenv("TEINEI_API_KEY"),
-        api_secret_key=os.getenv("TEINEI_API_SECRET_KEY"),
-        access_token=os.getenv("TEINEI_ACCESS_TOKEN"),
-        access_token_secret=os.getenv("TEINEI_ACCESS_TOKEN_SECRET")
+        api_key=os.getenv("API_KEY"),
+        api_secret_key=os.getenv("API_SECRET_KEY"),
+        access_token=os.getenv("ACCESS_TOKEN"),
+        access_token_secret=os.getenv("ACCESS_TOKEN_SECRET")
     )
 
     # Run for a week
