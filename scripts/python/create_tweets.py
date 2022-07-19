@@ -110,8 +110,9 @@ def post_tweet(
 
 
 def create_custom_tweets(
-    auth_info: AuthenticationInfo
-) -> None:
+    auth_info: AuthenticationInfo,
+    ret_outcome: bool = False,
+) -> tuple[str, float] | None:
 
     client = tweepy.Client(
         consumer_key=auth_info.api_key,
@@ -120,7 +121,6 @@ def create_custom_tweets(
         access_token_secret=auth_info.access_token_secret,
     )
 
-    today = datetime.strftime(datetime.today(), '%Y-%m-%d')
 
     # If a fine-tuned GPT-2-ja-small does not exist, make it
     if not len(glob.glob("./checkpoints/*small")):
@@ -132,6 +132,8 @@ def create_custom_tweets(
                 do rm -rf checkpoints/$i; done",
                 shell=True,
             )
+
+        today = datetime.strftime(datetime.today(), '%Y-%m-%d')
 
         # Do fine-tuning
         finetune(
@@ -164,6 +166,9 @@ def create_custom_tweets(
     )
 
     post_tweet(client, text=generated_text, score=score, model=model)
+
+    if ret_outcome:
+        return generated_text, float(score)
 
 
 def main():

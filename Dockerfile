@@ -21,8 +21,8 @@ RUN conda create -n textgen python=3.9
 RUN echo "source activate textgen" > ~/.bashrc
 RUN conda run -n textgen pip install -r requirements.txt
 
-RUN chmod +x src/setup.sh
-RUN chmod +x src/finetune.sh
-RUN chmod +x src/generate.sh
+RUN chmod +x scripts/shell/setup.sh
+RUN chmod +x scripts/shell/finetune.sh
+RUN chmod +x scripts/shell/generate.sh
 
-RUN src/setup.sh
+RUN scripts/shell/setup.sh
