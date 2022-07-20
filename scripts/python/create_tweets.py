@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import sys
+import re
 import time
 import random
 import glob
@@ -10,6 +12,10 @@ from dataclasses import dataclass
 
 import tweepy
 from dotenv import load_dotenv
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from config import NG_WORDS
 
 load_dotenv()
 
@@ -63,21 +69,25 @@ def generate(
     context: str = "<|endoftext|>",
 ) -> str:
 
-    generated = subprocess.run(
-        f"TF_CPP_MIN_LOG_LEVEL=3 \
-        python gpt2-japanese/gpt2-generate.py \
-        --model {model} \
-        --num_generate {num_generate} \
-        --temperature {temperature} \
-        --min_length {min_length} \
-        --max_length {max_length} \
-        --output_file {output_file} \
-        --context={context}",
-        shell=True,
-        capture_output=True,
-    )
+    while True:
+        generated = subprocess.run(
+            f"TF_CPP_MIN_LOG_LEVEL=3 \
+            python gpt2-japanese/gpt2-generate.py \
+            --model {model} \
+            --num_generate {num_generate} \
+            --temperature {temperature} \
+            --min_length {min_length} \
+            --max_length {max_length} \
+            --output_file {output_file} \
+            --context={context}",
+            shell=True,
+            capture_output=True,
+        ).stdout.decode()
 
-    return generated.stdout.decode()
+        if not bool(re.search("|".join(NG_WORDS), generated)):
+            break
+
+    return generated
 
 
 def post_tweet(
@@ -143,27 +153,31 @@ def create_custom_tweets(
 
     model = glob.glob("./checkpoints/*small")[0]
 
-    generated_text = generate(
-        model=model,
-        context="",
-        num_generate=1,
-        output_file="dist/dist.txt",
-    )
-
-    score = (
-        subprocess.run(
-            f"python gpt2-japanese/gpt2-score.py \
-                dist/dist.txt \
-                --model {model} \
-                --exclude-end",
-            shell=True,
-            capture_output=True,
+    while True:
+        generated_text = generate(
+            model=model,
+            context="",
+            num_generate=1,
+            output_file="dist/dist.txt",
         )
-        .stdout
-        .decode()
-        .split("\t")[-1]
-        .strip()
-    )
+
+        score = (
+            subprocess.run(
+                f"python gpt2-japanese/gpt2-score.py \
+                    dist/dist.txt \
+                    --model {model} \
+                    --exclude-end",
+                shell=True,
+                capture_output=True,
+            )
+            .stdout
+            .decode()
+            .split("\t")[-1]
+            .strip()
+        )
+
+        if float(score) > -200:
+            break
 
     post_tweet(client, text=generated_text, score=score, model=model)
 
