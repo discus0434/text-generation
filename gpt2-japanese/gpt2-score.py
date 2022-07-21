@@ -14,6 +14,7 @@ from model import HParams as HParams
 import model
 from encode_bpe import BPEEncoder_ja
 
+
 def score_tokens(*, hparams, tokens):
     # tokens is 1d, but model expects a batch of token-lists, so make a batch of 1
     x = tf.stack([tokens])
@@ -22,10 +23,10 @@ def score_tokens(*, hparams, tokens):
 
     # lm_output['logits'] should have shape [batch_size, tokens_length, vocab_size],
     # but from the slice in sample.py, it seemed like this might not always be the case?
-    assert lm_output['logits'].shape[2] == hparams.n_vocab
+    assert lm_output["logits"].shape[2] == hparams.n_vocab
 
     # take the first tensor, since batch size is fixed at 1
-    logits = lm_output['logits'][0]
+    logits = lm_output["logits"][0]
     # logits has shape [tokens_length, vocab_size]
 
     # get actual probabilities, in same shape as logits
@@ -46,59 +47,66 @@ def score_tokens(*, hparams, tokens):
 
     return ln_probs_next
 
+
 parser = argparse.ArgumentParser()
-parser.add_argument('input_file')
-parser.add_argument('--model', default='gpt2ja-medium')
-parser.add_argument('--tokens', action='store_true')
-parser.add_argument('--exclude-end', action='store_true')
-parser.add_argument('--gpu', type=str, default='0')
+parser.add_argument("input_file")
+parser.add_argument("--model", default="gpt2ja-medium")
+parser.add_argument("--tokens", action="store_true")
+parser.add_argument("--exclude-end", action="store_true")
+parser.add_argument("--gpu", type=str, default="0")
 args = parser.parse_args()
 
-with open("gpt2-japanese/ja-bpe.txt", encoding='utf-8') as f:
-    bpe = f.read().split('\n')
+with open("gpt2-japanese/ja-bpe.txt", encoding="utf-8") as f:
+    bpe = f.read().split("\n")
 
-with open('gpt2-japanese/emoji.json', encoding='utf-8') as f:
+with open("gpt2-japanese/emoji.json", encoding="utf-8") as f:
     emoji = json.loads(f.read())
 
 enc = BPEEncoder_ja(bpe, emoji)
 n_vocab = len(enc)
 
-if os.path.isfile(args.model+'/hparams.json'):
-    with open(args.model+'/hparams.json', encoding='utf-8') as f:
+if os.path.isfile(args.model + "/hparams.json"):
+    with open(args.model + "/hparams.json", encoding="utf-8") as f:
         params = json.loads(f.read())
         hparams = HParams(**params)
-elif 'small' in args.model:
-    hparams = HParams(**{
-      "n_vocab": n_vocab,
-      "n_ctx": 1024,
-      "n_embd": 768,
-      "n_head": 12,
-      "n_layer": 12
-    })
-elif 'medium' in args.model:
-    hparams = HParams(**{
-      "n_vocab": n_vocab,
-      "n_ctx": 1024,
-      "n_embd": 1024,
-      "n_head": 16,
-      "n_layer": 24
-    })
-elif 'large' in args.model:
-    hparams = HParams(**{
-      "n_vocab": n_vocab,
-      "n_ctx": 1024,
-      "n_embd": 1280,
-      "n_head": 20,
-      "n_layer": 36
-    })
+elif "small" in args.model:
+    hparams = HParams(
+        **{
+            "n_vocab": n_vocab,
+            "n_ctx": 1024,
+            "n_embd": 768,
+            "n_head": 12,
+            "n_layer": 12,
+        }
+    )
+elif "medium" in args.model:
+    hparams = HParams(
+        **{
+            "n_vocab": n_vocab,
+            "n_ctx": 1024,
+            "n_embd": 1024,
+            "n_head": 16,
+            "n_layer": 24,
+        }
+    )
+elif "large" in args.model:
+    hparams = HParams(
+        **{
+            "n_vocab": n_vocab,
+            "n_ctx": 1024,
+            "n_embd": 1280,
+            "n_head": 20,
+            "n_layer": 36,
+        }
+    )
 else:
-    raise ValueError('invalid model name.')
+    raise ValueError("invalid model name.")
 
 # read input texts
-if args.input_file == '-':
+if args.input_file == "-":
     input_f = sys.stdin
 else:
-    input_f = open(args.input_file, 'r')
+    input_f = open(args.input_file, "r")
 
 texts = []
 for line in input_f:
@@ -123,8 +131,8 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
     ckpt = tf.train.latest_checkpoint(args.model)
     saver.restore(sess, ckpt)
 
-    end_token = enc.encode('<|endoftext|>')[0]
-    start_token = end_token # it does double duty
+    end_token = enc.encode("<|endoftext|>")[0]
+    start_token = end_token  # it does double duty
 
     for text in texts:
         # prepend the start token so that we get a probability for the first "real" token
@@ -133,15 +141,18 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
             tokens += [end_token]
         tokens_with_start = [start_token] + tokens
 
-        logprobs = sess.run(output, feed_dict={
-            tokens_tensor: tokens_with_start,
-        })
+        logprobs = sess.run(
+            output,
+            feed_dict={
+                tokens_tensor: tokens_with_start,
+            },
+        )
 
         logprobs_list = logprobs.tolist()
-        assert len(logprobs_list) == len(tokens) # sanity check
+        assert len(logprobs_list) == len(tokens)  # sanity check
 
-        print('%s\t%.5g' % (text, sum(logprobs_list)))
+        print("%s\t%.5g" % (text, sum(logprobs_list)))
         if args.tokens:
             for t, lp in zip(tokens, logprobs_list):
-                print('%s\t%.5g' % (enc.decode([t]), lp))
+                print("%s\t%.5g" % (enc.decode([t]), lp))
             print()

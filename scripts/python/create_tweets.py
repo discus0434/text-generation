@@ -6,6 +6,7 @@ import re
 import time
 import random
 import glob
+import argparse
 import subprocess
 from datetime import datetime
 from dataclasses import dataclass
@@ -13,7 +14,7 @@ from dataclasses import dataclass
 import tweepy
 from dotenv import load_dotenv
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from config import NG_WORDS
 
@@ -24,17 +25,17 @@ NUM_TWEETS_PER_DAY = 48
 
 @dataclass
 class AuthenticationInfo:
-    api_key: str = "",
-    api_secret_key: str = "",
-    bearer_token: str = "",
-    access_token: str = "",
-    access_token_secret: str = "",
+    api_key: str = ("",)
+    api_secret_key: str = ("",)
+    bearer_token: str = ("",)
+    access_token: str = ("",)
+    access_token_secret: str = ("",)
 
 
 def finetune(
     src_dir: str = "sample_texts",
     dst_file: str = "finetune",
-    run_name: str = "gpt2ja-finetune-small"
+    run_name: str = "gpt2ja-finetune-small",
 ) -> None:
 
     # Encode a dataset
@@ -99,7 +100,7 @@ def post_tweet(
     json = {}
 
     poll_or_not = random.randint(0, 100)
-    if poll_or_not >= 90:
+    if poll_or_not >= 80:
         options = []
         for _ in range(3):
             options.append(
@@ -121,7 +122,8 @@ def post_tweet(
 
 def create_custom_tweets(
     auth_info: AuthenticationInfo,
-    ret_outcome: bool = False,
+    model: str | None = None,
+    no_post: bool = False,
 ) -> tuple[str, float] | None:
 
     client = tweepy.Client(
@@ -131,27 +133,26 @@ def create_custom_tweets(
         access_token_secret=auth_info.access_token_secret,
     )
 
+    if model is None:
+        # If model is not specified, use the oldest one
+        try:
+            model = glob.glob("./checkpoints/*small")[0]
 
-    # If a fine-tuned GPT-2-ja-small does not exist, make it
-    if not len(glob.glob("./checkpoints/*small")):
-
-        # Remove any other checkpoint if exists
-        if os.path.exists("./checkpoints"):
-            subprocess.run(
-                "for i in `ls checkpoints | cut -d ' ' -f1`; \
-                do rm -rf checkpoints/$i; done",
-                shell=True,
+        # If a fine-tuned GPT-2-ja-small does not exist, make it
+        except IndexError:
+            today = datetime.strftime(datetime.today(), "%Y-%m-%d")
+            finetune(
+                dst_file=f"{today}-finetune",
+                run_name=f"gpt2ja-{today}-finetune-small",
+            )
+    else:
+        if not os.path.exists(f"./checkpoints/{model}"):
+            finetune(
+                dst_file=f"{model}-finetune",
+                run_name=model,
             )
 
-        today = datetime.strftime(datetime.today(), '%Y-%m-%d')
-
-        # Do fine-tuning
-        finetune(
-            dst_file=f"{today}-finetune",
-            run_name=f"gpt2ja-{today}-finetune-small",
-        )
-
-    model = glob.glob("./checkpoints/*small")[0]
+        model = f"./checkpoints/{model}"
 
     while True:
         generated_text = generate(
@@ -170,36 +171,51 @@ def create_custom_tweets(
                 shell=True,
                 capture_output=True,
             )
-            .stdout
-            .decode()
+            .stdout.decode()
             .split("\t")[-1]
             .strip()
         )
 
-        if float(score) > -200:
+        if float(score) > -120:
             break
+
+    # If no_post is True, print texts and do early return
+    if no_post:
+        print(generated_text, float(score))
+        return generated_text, float(score)
 
     post_tweet(client, text=generated_text, score=score, model=model)
 
-    if ret_outcome:
-        return generated_text, float(score)
-
 
 def main():
+
+    # Get arguments from command line
+    argparser = argparse.ArgumentParser(description="Download tweets from Twitter")
+    argparser.add_argument(
+        "-m",
+        "--model",
+        type=str,
+        help="Model Name",
+        required=False,
+        default=None,
+        dest="model",
+    )
+    argparser.add_argument("--no_post", action="store_true")
+    args = argparser.parse_args()
 
     # Get auth tokens from .env file
     auth_info = AuthenticationInfo(
         api_key=os.getenv("API_KEY"),
         api_secret_key=os.getenv("API_SECRET_KEY"),
         access_token=os.getenv("ACCESS_TOKEN"),
-        access_token_secret=os.getenv("ACCESS_TOKEN_SECRET")
+        access_token_secret=os.getenv("ACCESS_TOKEN_SECRET"),
     )
 
     # Run for a year
     for _ in range(NUM_TWEETS_PER_DAY * 365):
 
         # Generate a tweet and post it
-        create_custom_tweets(auth_info=auth_info)
+        create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
 
         # Sleep 30 min
         time.sleep(86400 // NUM_TWEETS_PER_DAY)

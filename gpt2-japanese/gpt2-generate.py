@@ -128,7 +128,7 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
     if len(args.output_file) > 0:
 
         if "/" in args.output_file:
-            os.makedirs(args.output_file.split('/')[0], exist_ok=True)
+            os.makedirs(args.output_file.split("/")[0], exist_ok=True)
 
         with open(args.output_file, "w", encoding="utf-8") as of:
             for i in range(args.num_generate):

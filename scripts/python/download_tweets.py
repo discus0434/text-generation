@@ -122,12 +122,14 @@ def main():
         max_tweets=args.max_tweets,
     )
 
-    today = datetime.strftime(datetime.today(), '%Y-%m-%d')
+    today = datetime.strftime(datetime.today(), "%Y-%m-%d")
 
     if not os.path.exists(Path(args.output_dir)):
         os.makedirs(Path(args.output_dir), exist_ok=True)
 
-    with open(Path(args.output_dir) / f"{today}_{args.user_name}_{args.max_tweets}.txt", "w") as f:
+    with open(
+        Path(args.output_dir) / f"{today}_{args.user_name}_{args.max_tweets}.txt", "w"
+    ) as f:
         tweets = "\n".join(tweets)
         print(tweets)
         f.write(tweets)
