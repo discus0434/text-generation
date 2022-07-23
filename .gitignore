@@ -1,6 +1,7 @@
 *.pkl
 gpt2ja-small/*
 gpt2ja-medium/*
+RoBERTa-ja_base/*
 sample_texts/*
 checkpoints/*
 *.npz
