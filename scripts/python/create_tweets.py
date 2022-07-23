@@ -176,7 +176,7 @@ def create_custom_tweets(
             .strip()
         )
 
-        if float(score) > -120:
+        if float(score) > -150:
             break
 
     # If no_post is True, print texts and do early return
@@ -215,7 +215,9 @@ def main():
     for _ in range(NUM_TWEETS_PER_DAY * 365):
 
         # Generate a tweet and post it
-        create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+        create_custom_tweets(
+            auth_info=auth_info, model=args.model, no_post=args.no_post
+        )
 
         # Sleep 30 min
         time.sleep(86400 // NUM_TWEETS_PER_DAY)

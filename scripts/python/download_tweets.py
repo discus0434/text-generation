@@ -24,6 +24,7 @@ def get_tweets_from_user(
     user_id: int | None,
     user_name: str | None,
     max_tweets: int = 100,
+    oldest_tweet_id: str | int | None = None,
 ) -> list[str]:
 
     client = tweepy.Client(
@@ -36,7 +37,6 @@ def get_tweets_from_user(
         user_id = client.get_user(username=user_name).data["id"]
 
     tweets = []
-    oldest_tweet_id = None
     n_roop = max_tweets // 200
 
     try:
@@ -100,9 +100,17 @@ def main():
         "-max",
         "--max_tweets",
         type=int,
-        help="Max number of tweets to download. Value must be multiple of 200",
+        help="Max number of tweets to download. Value must be multiple of 200 (Maximum = 3200)",
         default=200,
         dest="max_tweets",
+    )
+    argparser.add_argument(
+        "--oldest_tweet_id",
+        type=int,
+        help="Oldest Tweet ID",
+        required=False,
+        default=None,
+        dest="oldest_tweet_id",
     )
     args = argparser.parse_args()
 
@@ -120,6 +128,7 @@ def main():
         user_id=args.user_id,
         user_name=args.user_name,
         max_tweets=args.max_tweets,
+        oldest_tweet_id=args.oldest_tweet_id,
     )
 
     today = datetime.strftime(datetime.today(), "%Y-%m-%d")
