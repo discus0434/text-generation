@@ -1,0 +1,6 @@
+tqdm
+pandas
+matplotlib
+numpy
+jaconv
+tensorflow
