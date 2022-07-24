@@ -151,6 +151,7 @@ def create_custom_tweets(
                 dst_file=f"{today}-finetune",
                 run_name=f"gpt2ja-{today}-finetune-small",
             )
+            model = f"./checkpoints/gpt2ja-{today}-finetune-small"
     else:
         if not os.path.exists(f"./checkpoints/{model}"):
             finetune(

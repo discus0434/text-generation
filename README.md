@@ -5,7 +5,6 @@
 </h1>
 
 <p align="center">
-  <a href="https://www.codacy.com/gh/discus0434/text-generation/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=discus0434/text-generation&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/52d3bb26d382445a9bc5d1fd4a8cfc49"/></a>
   <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/_determina_?color=skyblue&style=social">
 </p>
 
@@ -13,6 +12,14 @@
   Easy to use scripts to fine-tune GPT-2 Japanese model with your own text, to generate sentences, and to tweet them automatically.
   <br>
 </h4>
+
+<br>
+<br>
+
+### ✨ Now You can try with Google Colab! <br>
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/discus0434/text-generation/blob/master/Tweet_Generation_with_GPT-2-ja_Finetuned_by_Your_Tweets.ipynb)
+
+<br>
 
 ## Installation
 
