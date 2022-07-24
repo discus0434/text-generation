@@ -94,28 +94,33 @@ def generate(
 def post_tweet(
     client: tweepy.Client,
     text: str,
-    score: str,
     model: str,
+    score: str = "",
 ) -> None:
     json = {}
 
-    poll_or_not = random.randint(0, 100)
-    if poll_or_not >= 80:
-        options = []
-        for _ in range(3):
-            options.append(
-                generate(
-                    model=model,
-                    context=text,
-                    num_generate=1,
-                    output_file="dist/dist.txt",
-                    min_length=5,
-                    max_length=19,
+    # If score has no value, disable poll-making and scoring
+    if not score == "":
+        poll_or_not = random.randint(0, 100)
+        if poll_or_not >= 80:
+            options = []
+            for _ in range(3):
+                options.append(
+                    generate(
+                        model=model,
+                        context=text,
+                        num_generate=1,
+                        output_file="dist/dist.txt",
+                        min_length=5,
+                        max_length=19,
+                    )
                 )
-            )
-        json["poll"] = {"options": options, "duration_minutes": 30}
+            json["poll"] = {"options": options, "duration_minutes": 30}
 
-    json["text"] = text + f"\n score: {score}"
+        json["text"] = text + f"\n score: {score}"
+
+    else:
+        json["text"] = text
 
     return client._make_request("POST", "/2/tweets", json=json, user_auth=True)
 
@@ -124,6 +129,7 @@ def create_custom_tweets(
     auth_info: AuthenticationInfo,
     model: str | None = None,
     no_post: bool = False,
+    is_google_colab: bool = False,
 ) -> tuple[str, float] | None:
 
     client = tweepy.Client(
@@ -162,21 +168,25 @@ def create_custom_tweets(
             output_file="dist/dist.txt",
         )
 
-        score = (
-            subprocess.run(
-                f"python3.9 gpt2-japanese/gpt2-score.py \
-                    dist/dist.txt \
-                    --model {model} \
-                    --exclude-end",
-                shell=True,
-                capture_output=True,
+        if not is_google_colab:
+            score = (
+                subprocess.run(
+                    f"python3.9 gpt2-japanese/gpt2-score.py \
+                      dist/dist.txt \
+                      --model {model} \
+                      --exclude-end",
+                    shell=True,
+                    capture_output=True,
+                )
+                .stdout.decode()
+                .split("\t")[-1]
+                .strip()
             )
-            .stdout.decode()
-            .split("\t")[-1]
-            .strip()
-        )
 
-        if float(score) > -120:
+            if float(score) > -120:
+                break
+        else:
+            score = ""
             break
 
     # If no_post is True, print texts and do early return
@@ -184,6 +194,7 @@ def create_custom_tweets(
         print(generated_text, float(score))
         return generated_text, float(score)
 
+    print(generated_text)
     post_tweet(client, text=generated_text, score=score, model=model)
 
 
@@ -201,9 +212,10 @@ def main():
         dest="model",
     )
     argparser.add_argument("--no_post", action="store_true")
+    argparser.add_argument("--is_google_colab", action="store_true")
     argparser.add_argument(
         "-n",
-        "num_generation",
+        "--num_generation",
         type=int,
         help="The number of tweet generation",
         required=False,
@@ -226,7 +238,9 @@ def main():
         for _ in range(NUM_TWEETS_PER_DAY * 365):
 
             # Generate a tweet and post it
-            create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+            create_custom_tweets(
+                auth_info=auth_info, model=args.model, no_post=args.no_post
+            )
 
             # Sleep 30 min
             time.sleep(86400 // NUM_TWEETS_PER_DAY)
@@ -234,13 +248,19 @@ def main():
     else:
 
         # Run for {args.num_generation} times
-        for _ in range(args.num_generation):
+        for i in range(args.num_generation):
 
             # Generate a tweet and post it
-            create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+            create_custom_tweets(
+                auth_info=auth_info,
+                model=args.model,
+                no_post=args.no_post,
+                is_google_colab=args.is_google_colab,
+            )
 
-            # Sleep 1 min
-            time.sleep(60)
+            if args.num_generation - i != 1:
+                # Sleep 1 min
+                time.sleep(60)
 
 
 if __name__ == "__main__":
