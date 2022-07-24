@@ -71,6 +71,12 @@ parser.add_argument(
 )
 
 parser.add_argument("--gpu", default="0", help="visible gpu number.")
+parser.add_argument(
+    "--num_iter",
+    type=int,
+    default=400,
+    help="The number of iteration steps",
+)
 
 
 def maketree(path):
@@ -266,7 +272,7 @@ def main():
         start_time = time.time()
 
         try:
-            for i in range(200):
+            for _ in range(args.num_iter):
                 if counter % args.save_every == 0:
                     save()
 

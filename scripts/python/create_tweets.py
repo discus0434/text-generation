@@ -36,6 +36,7 @@ def finetune(
     src_dir: str = "sample_texts",
     dst_file: str = "finetune",
     run_name: str = "gpt2ja-finetune-small",
+    num_iter: int = 400,
 ) -> None:
 
     # Encode a dataset
@@ -47,6 +48,7 @@ def finetune(
     # Fine-Tune
     subprocess.run(
         f"python3.9 gpt2-japanese/run_finetune.py \
+        --num_iter {num_iter} \
         --base_model gpt2ja-small \
         --dataset {dst_file}.npz \
         --run_name {run_name}",
@@ -61,7 +63,7 @@ def finetune(
 
 
 def generate(
-    model: str = "checkpoints/gpt2ja-finetune-small",
+    model: str,
     num_generate: int = 1,
     temperature: float = 1.0,
     min_length: int = 120,
@@ -129,6 +131,7 @@ def create_custom_tweets(
     auth_info: AuthenticationInfo,
     model: str | None = None,
     no_post: bool = False,
+    num_iter: int = 400,
     is_google_colab: bool = False,
 ) -> tuple[str, float] | None:
 
@@ -150,6 +153,7 @@ def create_custom_tweets(
             finetune(
                 dst_file=f"{today}-finetune",
                 run_name=f"gpt2ja-{today}-finetune-small",
+                num_iter=num_iter,
             )
             model = f"./checkpoints/gpt2ja-{today}-finetune-small"
     else:
@@ -157,6 +161,7 @@ def create_custom_tweets(
             finetune(
                 dst_file=f"{model}-finetune",
                 run_name=model,
+                num_iter=num_iter,
             )
 
         model = f"./checkpoints/{model}"
@@ -223,6 +228,13 @@ def main():
         default=-1,
         dest="num_generation",
     )
+    argparser.add_argument(
+        "--num_iter",
+        type=int,
+        default=400,
+        help="The number of iteration steps",
+        dest="num_iter",
+    )
     args = argparser.parse_args()
 
     # Get auth tokens from .env file
@@ -240,7 +252,10 @@ def main():
 
             # Generate a tweet and post it
             create_custom_tweets(
-                auth_info=auth_info, model=args.model, no_post=args.no_post
+                auth_info=auth_info,
+                model=args.model,
+                no_post=args.no_post,
+                num_iter=args.num_iter,
             )
 
             # Sleep 30 min
