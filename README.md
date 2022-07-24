@@ -17,7 +17,7 @@
 <br>
 
 ### ✨ Now You can try with Google Colab! <br>
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/discus0434/text-generation/blob/master/Tweet_Generation_with_GPT-2-ja_Finetuned_by_Your_Tweets.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/discus0434/text-generation/blob/master/Tweet_Generation_with_GPT_2_ja_Finetuned_by_Your_Tweets.ipynb)
 
 <br>
 
