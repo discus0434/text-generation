@@ -57,8 +57,10 @@ def get_tweets_from_user(
 
                 oldest_tweet_id = tweet.id
                 tweets.append(tweet.text + "<|endoftext|>")
-            print(f"roop {roop_idx} has been finished. wait for {900 // 4} secs...")
-            time.sleep(900 // 4)
+
+            if n_roop > 3:
+                print(f"roop {roop_idx} has been finished. wait for {900 // 4} secs...")
+                time.sleep(900 // 4)
 
         return tweets
 
