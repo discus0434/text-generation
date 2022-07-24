@@ -272,6 +272,7 @@ def main():
                 model=args.model,
                 no_post=args.no_post,
                 is_google_colab=args.is_google_colab,
+                num_iter=args.num_iter,
             )
 
             if args.num_generation - i != 1:
