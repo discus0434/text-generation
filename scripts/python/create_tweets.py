@@ -40,13 +40,13 @@ def finetune(
 
     # Encode a dataset
     subprocess.run(
-        f"python gpt2-japanese/encode_bpe.py --src_dir {src_dir} --dst_file {dst_file}",
+        f"python3.9 gpt2-japanese/encode_bpe.py --src_dir {src_dir} --dst_file {dst_file}",
         shell=True,
     )
 
     # Fine-Tune
     subprocess.run(
-        f"python gpt2-japanese/run_finetune.py \
+        f"python3.9 gpt2-japanese/run_finetune.py \
         --base_model gpt2ja-small \
         --dataset {dst_file}.npz \
         --run_name {run_name}",
@@ -73,7 +73,7 @@ def generate(
     while True:
         generated = subprocess.run(
             f"TF_CPP_MIN_LOG_LEVEL=3 \
-            python gpt2-japanese/gpt2-generate.py \
+            python3.9 gpt2-japanese/gpt2-generate.py \
             --model {model} \
             --num_generate {num_generate} \
             --temperature {temperature} \
@@ -164,7 +164,7 @@ def create_custom_tweets(
 
         score = (
             subprocess.run(
-                f"python gpt2-japanese/gpt2-score.py \
+                f"python3.9 gpt2-japanese/gpt2-score.py \
                     dist/dist.txt \
                     --model {model} \
                     --exclude-end",
