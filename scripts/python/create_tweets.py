@@ -190,17 +190,26 @@ def create_custom_tweets(
 def main():
 
     # Get arguments from command line
-    argparser = argparse.ArgumentParser(description="Download tweets from Twitter")
+    argparser = argparse.ArgumentParser(description="Create tweets")
     argparser.add_argument(
         "-m",
         "--model",
         type=str,
-        help="Model Name",
+        help="Model name",
         required=False,
         default=None,
         dest="model",
     )
     argparser.add_argument("--no_post", action="store_true")
+    argparser.add_argument(
+        "-n",
+        "num_generation",
+        type=int,
+        help="The number of tweet generation",
+        required=False,
+        default=-1,
+        dest="num_generation",
+    )
     args = argparser.parse_args()
 
     # Get auth tokens from .env file
@@ -211,14 +220,27 @@ def main():
         access_token_secret=os.getenv("ACCESS_TOKEN_SECRET"),
     )
 
-    # Run for a year
-    for _ in range(NUM_TWEETS_PER_DAY * 365):
+    if args.num_generation == -1:
 
-        # Generate a tweet and post it
-        create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+        # Run for a year
+        for _ in range(NUM_TWEETS_PER_DAY * 365):
 
-        # Sleep 30 min
-        time.sleep(86400 // NUM_TWEETS_PER_DAY)
+            # Generate a tweet and post it
+            create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+
+            # Sleep 30 min
+            time.sleep(86400 // NUM_TWEETS_PER_DAY)
+
+    else:
+
+        # Run for {args.num_generation} times
+        for _ in range(args.num_generation):
+
+            # Generate a tweet and post it
+            create_custom_tweets(auth_info=auth_info, model=args.model, no_post=args.no_post)
+
+            # Sleep 1 min
+            time.sleep(60)
 
 
 if __name__ == "__main__":
