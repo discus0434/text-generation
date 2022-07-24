@@ -192,8 +192,8 @@ def create_custom_tweets(
 
     # If no_post is True, print texts and do early return
     if no_post:
-        print(generated_text, float(score))
-        return generated_text, float(score)
+        print(generated_text)
+        return generated_text
 
     print(generated_text)
     post_tweet(client, text=generated_text, score=score, model=model)
