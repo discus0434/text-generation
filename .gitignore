@@ -6,6 +6,7 @@ sample_texts/*
 checkpoints/*
 *.npz
 special_thanks.txt
+a.sh
 
 create_sentences.ipynb
 

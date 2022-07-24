@@ -32,8 +32,8 @@ import tensorflow.python.util.deprecation as deprecation
 
 tf.get_logger().setLevel("ERROR")
 
-from .model import modeling
-from .model.modeling import BertConfig, BertModel
+from model import modeling
+from model.modeling import BertConfig, BertModel
 
 CHECKPOINT_DIR = "checkpoint"
 SAMPLE_DIR = "samples"

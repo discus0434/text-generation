@@ -72,10 +72,10 @@ with tf.Session(config=config, graph=tf.Graph()) as sess:
     ckpt = tf.train.latest_checkpoint(args.model)
     saver.restore(sess, ckpt)
 
-    with open("ja-bpe.txt", encoding="utf-8") as f:
+    with open("RoBERTa_japanese/ja-bpe.txt", encoding="utf-8") as f:
         bpe = f.read().split("\n")
 
-    with open("emoji.json", encoding="utf-8") as f:
+    with open("RoBERTa_japanese/emoji.json", encoding="utf-8") as f:
         emoji = json.loads(f.read())
 
     enc = BPEEncoder_ja(bpe, emoji)
