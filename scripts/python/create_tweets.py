@@ -116,7 +116,7 @@ def post_tweet(
                     )
                 )
 
-        json["poll"] = {"options": options, "duration_minutes": 30}
+            json["poll"] = {"options": options, "duration_minutes": 30}
 
         json["text"] = text
 
