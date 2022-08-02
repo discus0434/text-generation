@@ -35,8 +35,8 @@ tf.get_logger().setLevel("ERROR")
 from model import modeling
 from model.modeling import BertConfig, BertModel
 
-CHECKPOINT_DIR = "checkpoint"
-SAMPLE_DIR = "samples"
+CHECKPOINT_DIR = "checkpoints_bert"
+SAMPLE_DIR = "sample_texts_bert"
 
 parser = argparse.ArgumentParser(
     description="Pretraining BERT(RoBERTa) on your custom dataset.",

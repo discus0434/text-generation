@@ -3,7 +3,9 @@ gpt2ja-small/*
 gpt2ja-medium/*
 RoBERTa-ja_base/*
 sample_texts/*
+sample_texts_bert/*
 checkpoints/*
+checkpoints_bert/*
 *.npz
 special_thanks.txt
 a.sh

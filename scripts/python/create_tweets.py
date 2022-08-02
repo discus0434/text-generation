@@ -20,7 +20,7 @@ from config import NG_WORDS
 
 load_dotenv()
 
-NUM_TWEETS_PER_DAY = 48
+NUM_TWEETS_PER_DAY = 72
 
 
 @dataclass
@@ -64,8 +64,8 @@ def generate(
     model: str = "checkpoints/gpt2ja-finetune-small",
     num_generate: int = 1,
     temperature: float = 1.0,
-    min_length: int = 120,
-    max_length: int = 130,
+    min_length: int = 10,
+    max_length: int = 139,
     output_file: str = "dist/dist.txt",
     context: str = "<|endoftext|>",
 ) -> str:
@@ -99,23 +99,34 @@ def post_tweet(
 ) -> None:
     json = {}
 
-    poll_or_not = random.randint(0, 100)
-    if poll_or_not >= 80:
-        options = []
-        for _ in range(3):
-            options.append(
-                generate(
-                    model=model,
-                    context=text,
-                    num_generate=1,
-                    output_file="dist/dist.txt",
-                    min_length=5,
-                    max_length=19,
+    # If score has no value, disable poll-making and scoring
+    if not score == "":
+        poll_or_not = random.randint(0, 100)
+        if poll_or_not >= 95:
+            options = []
+            for _ in range(3):
+                options.append(
+                    generate(
+                        model=model,
+                        context=text,
+                        num_generate=1,
+                        output_file="dist/dist.txt",
+                        min_length=5,
+                        max_length=19,
+                    )
                 )
-            )
+
         json["poll"] = {"options": options, "duration_minutes": 30}
 
-    json["text"] = text + f"\n score: {score}"
+        json["text"] = text
+
+    else:
+        json["text"] = text
+
+    with open("./dist/hist.txt", "a") as f:
+        f.write(
+            "=========\n" + text + "=========\n" + f"\n score: {score}" + "=========\n"
+        )
 
     return client._make_request("POST", "/2/tweets", json=json, user_auth=True)
 
